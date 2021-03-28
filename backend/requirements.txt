@@ -1,0 +1,6 @@
+flask
+wtforms
+pytest
+apscheduler
+requests
+prometheus_client
