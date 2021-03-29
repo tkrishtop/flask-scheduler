@@ -4,7 +4,4 @@ venv
 **/.DS_Store
 **/.pytest_cache
 **/__pycache__
-Vagrantfile
-provision.sh
 .vagrant
-docker-compose.yml

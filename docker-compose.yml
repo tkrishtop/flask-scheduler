@@ -1,0 +1,35 @@
+version: '3'
+services:
+  backend:
+    container_name: scheduler
+    image: scheduler/scheduler
+    restart: always
+    build:
+      context: ./scheduler
+    ports:
+      - 5555:5555
+
+  prometheus:
+    container_name: prometheus
+    image: scheduler/prometheus
+    build:
+      context: ./prometheus
+    restart: always
+    ports:
+      - 9090:9090
+    networks:
+      - default
+
+  grafana:
+    container_name: grafana
+    image: scheduler/grafana
+    build:
+      context: ./grafana
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+    ports:
+      - 3000:3000
+    networks:
+      - default
+    depends_on:
+      - prometheus

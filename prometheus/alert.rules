@@ -1,0 +1,11 @@
+groups:
+  - name: SchedulerAlerts
+    rules:
+    - alert: SchedulerIsDown
+      expr: up != 1
+      for: 5s
+      labels:
+        severity: low
+      annotations:
+        description: '{{ $labels.job }} on {{ $labels.instance }} is down.'
+        summary: Scheduler is down
