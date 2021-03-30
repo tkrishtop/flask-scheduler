@@ -42,6 +42,8 @@ localhost:3000
 
 ![sh](readme/grafana_dashboard.png)
 
+![sh](readme/grafana_live.png)
+
 ### How to run in local
 
 ```

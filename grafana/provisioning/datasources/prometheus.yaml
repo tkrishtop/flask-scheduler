@@ -9,7 +9,7 @@ datasources:
     type: prometheus
     access: direct
     orgId: 1
-    url: 0.0.0.0:9090
+    url: http://prometheus:9090
     isDefault: true
     version: 1
     editable: true
