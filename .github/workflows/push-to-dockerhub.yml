@@ -1,0 +1,28 @@
+name: CD - Push docker images to dockerhub
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # check if flask boots fine
+      - name: Run flask container (scheduler)
+        run: |
+          docker-compose up -d scheduler
+
+      - name: Print flask status
+        run: |
+          docker ps --filter "name=scheduler"
+
+      - name: Fail if flask container is not running
+        run: |
+          if [[ x`docker ps --filter "name=scheduler" | grep Up` = x ]]; then exit 1; fi
+
+      # TODO: push flask image to dockerhub
+

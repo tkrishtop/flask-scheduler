@@ -1,6 +1,6 @@
 version: '3'
 services:
-  backend:
+  scheduler:
     container_name: scheduler
     image: scheduler/scheduler
     restart: always
@@ -8,6 +8,8 @@ services:
       context: ./scheduler
     ports:
       - 5555:5555
+    networks:
+      - default
 
   prometheus:
     container_name: prometheus
