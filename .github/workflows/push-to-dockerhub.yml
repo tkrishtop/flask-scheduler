@@ -34,7 +34,7 @@ jobs:
           if [[ x`docker exec scheduler pytest -v` =~ "FAILED" ]]; then exit 1; fi
 
       # run other containers
-      - name: Run grafana + prometheus 
+      - name: Run grafana + prometheus
         run: |
           docker-compose up -d grafana
 

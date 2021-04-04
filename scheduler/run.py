@@ -20,7 +20,7 @@ LOCAL_PORT = 5555
 PORT_FLASK = os.getenv('PORT', LOCAL_PORT)
 
 prod = bool(os.getenv('PORT'))
-LOCAL_APP_NAME = "http://" + HOST + ":" + str(LOCAL_PORT)
+LOCAL_APP_NAME = "http://" + HOST + ":" + str(LOCAL_PORT) + "/"
 APP_NAME = "https://flask-scheduler.herokuapp.com/" if prod else LOCAL_APP_NAME
 
 # ------------logging---------------------------------------------------------------
