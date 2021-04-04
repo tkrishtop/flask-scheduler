@@ -11,8 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # check if flask boots fine
-      - name: Run flask container (scheduler)
+      # check if containers boots fine
+      - name: Run flask container
         run: |
           docker-compose up -d scheduler
 
@@ -24,7 +24,7 @@ jobs:
         run: |
           if [[ x`docker ps --filter "name=scheduler" | grep Up` = x ]]; then exit 1; fi
 
-      # run test suite
+      # run test suite for flask
       - name: Print test results
         run: |
           docker exec scheduler pytest -v
@@ -33,14 +33,45 @@ jobs:
         run: |
           if [[ x`docker exec scheduler pytest -v` =~ "FAILED" ]]; then exit 1; fi
 
-      # push backend image to dockerhub
+      # run other containers
+      - name: Run grafana + prometheus 
+        run: |
+          docker-compose up -d grafana
+
+      # check if grafana boots fine
+      - name: Print grafana status
+        run: |
+          docker ps --filter "name=grafana"
+
+      - name: Fail if grafana container is not running
+        run: |
+          if [[ x`docker ps --filter "name=grafana" | grep Up` = x ]]; then exit 1; fi
+
+      # check if prometheus boots fine
+      - name: Print prometheus status
+        run: |
+          docker ps --filter "name=prometheus"
+
+      - name: Fail if prometheus container is not running
+        run: |
+          if [[ x`docker ps --filter "name=prometheus" | grep Up` = x ]]; then exit 1; fi
+
+      # push images to dockerhub
       - name: Docker login
         run: |
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
 
-      - name: Tag image with backend tag
+      - name: Tag image with scheduler tag
         run: |
           docker image tag scheduler/scheduler ${{ secrets.DOCKER_USER }}/scheduler:scheduler
+
+      - name: Tag image with grafana tag
+        run: |
+          docker image tag scheduler/grafana ${{ secrets.DOCKER_USER }}/scheduler:grafana
+
+      - name: Tag image with prometheus tag
+        run: |
+          docker image tag scheduler/prometheus ${{ secrets.DOCKER_USER }}/scheduler:prometheus
 
       - name: List images
         run: |
@@ -49,6 +80,8 @@ jobs:
       - name: Docker push
         run: |
           docker image push ${{ secrets.DOCKER_USER }}/scheduler:scheduler
+          docker image push ${{ secrets.DOCKER_USER }}/scheduler:grafana
+          docker image push ${{ secrets.DOCKER_USER }}/scheduler:prometheus
 
       - name: Docker logout
         run: |
