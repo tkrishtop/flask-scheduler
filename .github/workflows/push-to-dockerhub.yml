@@ -24,5 +24,14 @@ jobs:
         run: |
           if [[ x`docker ps --filter "name=scheduler" | grep Up` = x ]]; then exit 1; fi
 
+      # run test suite
+      - name: Print test results
+        run: |
+          docker exec scheduler pytest -v
+
+      - name: Fail if tests are not 100%
+        run: |
+          if [[ x`docker exec scheduler pytest -v` =~ "FAILED" ]]; then exit 1; fi
+
       # TODO: push flask image to dockerhub
 
