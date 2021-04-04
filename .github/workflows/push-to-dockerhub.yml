@@ -33,5 +33,24 @@ jobs:
         run: |
           if [[ x`docker exec scheduler pytest -v` =~ "FAILED" ]]; then exit 1; fi
 
-      # TODO: push flask image to dockerhub
+      # push backend image to dockerhub
+      - name: Docker login
+        run: |
+          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+
+      - name: Tag image with backend tag
+        run: |
+          docker image tag scheduler/scheduler ${{ secrets.DOCKER_USER }}/scheduler:scheduler
+
+      - name: List images
+        run: |
+          docker image ls
+
+      - name: Docker push
+        run: |
+          docker image push ${{ secrets.DOCKER_USER }}/scheduler:scheduler
+
+      - name: Docker logout
+        run: |
+          docker logout
 
